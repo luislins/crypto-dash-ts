@@ -4,10 +4,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Footer, Navbar, Sidebar } from "./components";
 import { useStateContext } from "./contexts/Context";
-import { CoinsListPage, Login } from "./pages";
+import { CoinsListPage, Login, PrivateRoute } from "./pages";
 
 function App() {
   const { setCurrentMode, activeMenu } = useStateContext();
+  //   const token = localStorage.getItem("auth");
+  const token = true;
   useEffect(() => {
     const currentThemeColor = localStorage.getItem("colorMode");
     const currentThemeMode = localStorage.getItem("themeMode");
@@ -21,29 +23,32 @@ function App() {
         <div className="flex relative bg-main-dark-bg">
           {activeMenu ? (
             <div className="w-72 fixed sidebar bg-secondary-dark-bg ">
-              <Sidebar />
+              {token ? <Sidebar /> : <div />}
             </div>
           ) : (
             <div className="w-0 bg-secondary-dark-bg">
-              <Sidebar />
+              {token ? <Sidebar /> : <div />}
             </div>
           )}
           <div
             className={
-              activeMenu
-                ? "bg-main-dark-bg min-h-screen md:ml-72 w-full  "
-                : "bg-main-dark-bg  w-full min-h-screen flex-2 "
+              activeMenu && token
+                ? "bg-main-dark-bg min-h-screen md:ml-72 w-full"
+                : "bg-main-dark-bg  w-full min-h-screen flex-2"
             }
           >
             <div className="fixed md:static bg-secondary-dark-bg navbar w-full ">
-              <Navbar />
+              {token ? <Navbar /> : <div />}
             </div>
             <div>
               <Routes>
                 {/* dashboard  */}
-                <Route path="/" element={<CoinsListPage />} />
+                <Route path="/" element={<PrivateRoute />}>
+                  <Route path="/" element={<CoinsListPage />} />
+                  <Route path="/moedas" element={<CoinsListPage />} />
+                </Route>
+
                 <Route path="/login" element={<Login />} />
-                <Route path="/moedas" element={<CoinsListPage />} />
               </Routes>
             </div>
             <Footer />
