@@ -7,9 +7,10 @@ import { useStateContext } from "./contexts/Context";
 import { CoinsListPage, Login, PrivateRoute } from "./pages";
 
 function App() {
-  const { setCurrentMode, activeMenu } = useStateContext();
+  const { setCurrentMode, activeMenu, auth } = useStateContext();
   //   const token = localStorage.getItem("auth");
-  const token = true;
+  const token = auth;
+
   useEffect(() => {
     const currentThemeColor = localStorage.getItem("colorMode");
     const currentThemeMode = localStorage.getItem("themeMode");
@@ -51,7 +52,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
               </Routes>
             </div>
-            <Footer />
+            {token ? <Footer /> : <div />}
           </div>
         </div>
       </BrowserRouter>

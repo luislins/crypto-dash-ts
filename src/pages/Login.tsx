@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
+import { useStateContext } from "../contexts/Context";
 export function Login() {
-  //   const token = localStorage.getItem("auth");
-  const token = true;
+  const { auth } = useStateContext();
+  const token = auth;
 
   const login = (data: any) => {
     let params = {
