@@ -1,20 +1,17 @@
-import React from 'react'
-import { ChartComponent, SeriesCollectionDirective, SeriesDirective, Inject, LineSeries, DateTime } from '@syncfusion/ej2-react-charts';
+import { useContext } from "react";
 
-import { lineCustomSeries, LinePrimaryXAxis, LinePrimaryYAxis } from '../../data/dummy';
-import { Line } from 'react-chartjs-2';
-import { useStateContext } from '../../contexts/Context';
-import faker from 'faker';
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-} from 'chart.js';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { Context } from "../../contexts/Context";
 
 ChartJS.register(
   CategoryScale,
@@ -27,42 +24,39 @@ ChartJS.register(
 );
 
 interface dataLineChartProps {
-  data:{
+  data: {
     labels: string[];
     datasets: {
-        label: string;
-        data: number[];
-        borderColor: string;
-        backgroundColor: string;
+      label: string;
+      data: number[];
+      borderColor: string;
+      backgroundColor: string;
     }[];
-  }
-};
+  };
+}
 
-export function LineChart({ data } : dataLineChartProps) {
-  const { currentMode } = useStateContext();
+export function LineChart({ data }: dataLineChartProps) {
+  const { currentMode } = useContext(Context);
   const options = {
     responsive: true,
     plugins: {
       datalabels: {
-        display:false
+        display: false,
       },
       legend: {
         labels: {
           font: {
-              weight:"bold"
+            weight: "bold",
           },
-          color: currentMode === 'Dark' ? '#fff' : '#33373E'
+          color: currentMode === "Dark" ? "#fff" : "#33373E",
         },
-        position: 'bottom' as const
-        },
+        position: "bottom" as const,
+      },
       title: {
-        display: false
+        display: false,
       },
     },
   };
 
-  return (
-   <Line options={options} data={data} />
-  );
+  return <Line options={options} data={data} />;
 }
-

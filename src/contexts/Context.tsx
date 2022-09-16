@@ -1,91 +1,43 @@
-import { ChangeEvent, createContext, useContext, useState } from "react";
+import { ChangeEvent, createContext, useState } from "react";
 
-interface childrenProps {
-  children?: React.ReactNode;
-}
-
-interface defaultStateIsClickedProps {
-  chat: boolean;
-  cart: boolean;
-  userProfile: boolean;
-  notification: boolean;
-}
-
-const defaultStateIsClicked: defaultStateIsClickedProps = {
-  chat: false,
-  cart: false,
-  userProfile: false,
-  notification: false,
+type ContextProps = {
+  children: React.ReactNode;
 };
 
-interface AppContext {
+type ContextType = {
   activeMenu?: boolean;
   setActiveMenu: (value: boolean) => void;
-  isClicked: defaultStateIsClickedProps;
-  setIsClicked: (value: defaultStateIsClickedProps) => void;
   currentMode: string;
   setCurrentMode: (value: string) => void;
   screenSize: number | null;
   setScreenSize: (value: number | null) => void;
   themeSettings?: boolean;
   setThemeSettings: (value: boolean) => void;
-  handleClick: (value: string) => void;
-  defaultStateIsClicked: defaultStateIsClickedProps;
   setMode: (value: ChangeEvent<HTMLInputElement>) => void;
-  auth?: boolean;
-  setAuth: (value: boolean) => void;
-}
-
-const defaultState: AppContext = {
-  screenSize: null,
-  setActiveMenu: (value) => {
-    return;
-  },
-  setIsClicked: (value) => {
-    return;
-  },
-  setCurrentMode: (value) => {
-    return;
-  },
-  setScreenSize: (value) => {
-    return;
-  },
-  setThemeSettings: (value) => {
-    return;
-  },
-  setMode: (value) => {
-    return;
-  },
-  isClicked: defaultStateIsClicked,
-  handleClick: (value) => {
-    return;
-  },
-  defaultStateIsClicked: defaultStateIsClicked,
-  currentMode: "white",
-  setAuth: (value) => {
-    return;
-  },
 };
 
-const Context = createContext<AppContext>(defaultState);
+const initialValue: ContextType = {
+  screenSize: null,
+  setActiveMenu: () => {},
+  setCurrentMode: () => {},
+  setScreenSize: () => {},
+  setThemeSettings: () => {},
+  setMode: () => {},
+  currentMode: "white",
+};
 
-export const ContextProvider: React.FC<childrenProps> = ({ children }) => {
+export const Context = createContext<ContextType>(initialValue);
+
+export const ContextProvider = ({ children }: ContextProps) => {
   const [screenSize, setScreenSize] = useState<number | null>(null); // aqui era undefined
   const [currentMode, setCurrentMode] = useState<string>("Light");
   const [themeSettings, setThemeSettings] = useState<boolean>(false);
   const [activeMenu, setActiveMenu] = useState<boolean>(true);
-  const [auth, setAuth] = useState<boolean>(false);
-  const [isClicked, setIsClicked] = useState<defaultStateIsClickedProps>(
-    defaultStateIsClicked
-  );
 
   const setMode = (e: ChangeEvent<HTMLInputElement>) => {
     setCurrentMode(e.target.value);
     localStorage.setItem("themeMode", e.target.value);
   };
-
-  const handleClick = (clicked: string) =>
-    setIsClicked({ ...defaultStateIsClicked, [clicked]: true });
 
   return (
     <Context.Provider
@@ -94,22 +46,15 @@ export const ContextProvider: React.FC<childrenProps> = ({ children }) => {
         activeMenu,
         screenSize,
         setScreenSize,
-        handleClick,
-        isClicked,
-        defaultStateIsClicked,
-        setIsClicked,
         setActiveMenu,
         setCurrentMode,
         setMode,
         themeSettings,
         setThemeSettings,
-        auth,
-        setAuth,
       }}
     >
       {children}
     </Context.Provider>
   );
 };
-export const useStateContext = () => useContext(Context);
 export default ContextProvider;

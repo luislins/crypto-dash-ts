@@ -1,13 +1,14 @@
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import { useContext } from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import { SiShopware } from "react-icons/si";
 import { Link, NavLink } from "react-router-dom";
 
-import { useStateContext } from "../contexts/Context";
+import { Context } from "../contexts/Context";
 import { links } from "../data/dummy";
 
 export function Sidebar() {
-  const { activeMenu, setActiveMenu, screenSize } = useStateContext();
+  const { activeMenu, setActiveMenu, screenSize } = useContext(Context);
 
   const handleCloseSideBar = () => {
     if (activeMenu && screenSize !== null && screenSize <= 900) {

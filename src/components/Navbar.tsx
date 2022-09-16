@@ -1,12 +1,8 @@
-import React, { useEffect } from "react";
-import { AiOutlineMenu } from "react-icons/ai";
-import { RiNotification3Line } from "react-icons/ri";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import React, { useContext, useEffect } from "react";
+import { AiOutlineMenu } from "react-icons/ai";
 
-import avatar from "../data/avatar.jpg";
-import { Notification, UserProfile } from "./";
-import { useStateContext } from "../contexts/Context";
+import { Context } from "../contexts/Context";
 
 interface NavButtonProps {
   title: string;
@@ -34,15 +30,8 @@ const NavButton = ({ title, customFunc, icon, dotColor }: NavButtonProps) => {
 };
 
 export function Navbar() {
-  const {
-    activeMenu,
-    setActiveMenu,
-    handleClick,
-    isClicked,
-    setScreenSize,
-    screenSize,
-  } = useStateContext();
-
+  const { activeMenu, setActiveMenu, setScreenSize, screenSize } =
+    useContext(Context);
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
 
@@ -70,36 +59,6 @@ export function Navbar() {
         customFunc={handleActiveMenu}
         icon={<AiOutlineMenu />}
       />
-      <div className="flex">
-        <NavButton
-          title="Notification"
-          dotColor="rgb(254, 201, 15)"
-          customFunc={() => handleClick("notification")}
-          icon={<RiNotification3Line />}
-        />
-        <TooltipComponent content="Profile" position="BottomCenter">
-          <div
-            className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
-            onClick={() => handleClick("userProfile")}
-          >
-            <img
-              className="rounded-full w-8 h-8"
-              src={avatar}
-              alt="user-profile"
-            />
-            <p>
-              <span className="text-gray-400 text-14">Hi,</span>{" "}
-              <span className="text-gray-400 font-bold ml-1 text-14">
-                Michael
-              </span>
-            </p>
-            <MdKeyboardArrowDown className="text-gray-400 text-14" />
-          </div>
-        </TooltipComponent>
-
-        {isClicked.notification && <Notification />}
-        {isClicked.userProfile && <UserProfile />}
-      </div>
     </div>
   );
 }

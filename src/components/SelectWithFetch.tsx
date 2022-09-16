@@ -1,4 +1,5 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import Select, { StylesConfig } from "react-select";
 
 type SelectOptionType = { value: string; label: string };
@@ -14,18 +15,11 @@ type CoinType = {
 
 type IsMulti = false;
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
-
 interface SelectWithFetchProps {
   selectedValue: (coin: string) => void;
 }
 
 export function SelectWithFetch({ selectedValue }: SelectWithFetchProps) {
-  //variable
   const [options, setOptions] = useState<SelectOptionType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [coinSelected, setCoinSelect] = useState("");
@@ -33,16 +27,16 @@ export function SelectWithFetch({ selectedValue }: SelectWithFetchProps) {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       fetchCoins(searchTerm);
-    }, 2000);
+    }, 500);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
   const fetchCoins = (option: string) => {
     if (option != "") {
-      console.log(option);
-      fetch("https://api.coingecko.com/api/v3/search?query=" + option)
-        .then((response) => response.json())
+      axios
+        .get("https://api.coingecko.com/api/v3/search?query=" + option)
+        .then((response) => response.data)
         .then((res) => {
           if (res?.coins !== undefined) {
             var coinsFetched: SelectOptionType[] = [];
@@ -73,6 +67,7 @@ export function SelectWithFetch({ selectedValue }: SelectWithFetchProps) {
   };
 
   const onButtonClick = () => {
+    console.log(coinSelected);
     if (coinSelected) {
       selectedValue(coinSelected);
     }

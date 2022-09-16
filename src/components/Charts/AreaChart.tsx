@@ -1,20 +1,17 @@
-import React from 'react';
-import { AccumulationChartComponent, AccumulationSeriesCollectionDirective, AccumulationSeriesDirective, AccumulationLegend, PieSeries, AccumulationDataLabel, Inject, AccumulationTooltip } from '@syncfusion/ej2-react-charts';
-
-import { useStateContext } from '../../contexts/Context';
 import {
-  Chart as ChartJS,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
+  Chart as ChartJS,
   Filler,
   Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import faker from 'faker';
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+} from "chart.js";
+import { useContext } from "react";
+import { Line } from "react-chartjs-2";
+import { Context } from "../../contexts/Context";
 
 ChartJS.register(
   CategoryScale,
@@ -27,56 +24,58 @@ ChartJS.register(
   Legend
 );
 interface AreaProps {
-  id:string
-  height:string
-  width:string
-  currentColor:string
+  id: string;
+  height: string;
+  width: string;
+  currentColor: string;
   data: {
     labels: string[];
     datasets: {
-        fill: boolean;
-        label: string;
-        data: number[];
+      fill: boolean;
+      label: string;
+      data: number[];
     }[];
+  };
 }
-};
 
-export function AreaChart({ id, data, currentColor, height, width} : AreaProps) {
-  const { currentMode } = useStateContext();
+export function AreaChart({
+  id,
+  data,
+  currentColor,
+  height,
+  width,
+}: AreaProps) {
+  const { currentMode } = useContext(Context);
 
   const options = {
     responsive: true,
     plugins: {
       datalabels: {
-        display:false
+        display: false,
       },
       legend: {
-        display: false
+        display: false,
       },
       title: {
-        display: false
+        display: false,
       },
-      responsive:true
+      responsive: true,
     },
     scales: {
       y: {
-        display: false
+        display: false,
       },
       x: {
-        display: false
-      }
-    }, 
+        display: false,
+      },
+    },
     elements: {
       line: {
-        backgroundColor : currentMode === 'Dark' ? '#fff' : '#33373E',
-        borderColor : currentColor
-      }
-  }
-    
-    
+        backgroundColor: currentMode === "Dark" ? "#fff" : "#33373E",
+        borderColor: currentColor,
+      },
+    },
   };
-
-
 
   return (
     <Line id={id} height={height} width={width} options={options} data={data} />

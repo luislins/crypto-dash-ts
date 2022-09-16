@@ -1,9 +1,11 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
-import NumberFormat from "react-number-format";
 import { ThreeDots } from "react-loader-spinner";
+import NumberFormat from "react-number-format";
 
 interface CryptoCardProps {
   name: string;
+  addSetSelectedCoinsList: (coinToRemove: string) => void;
 }
 interface ICoinsData {
   symbol: string;
@@ -13,9 +15,10 @@ interface ICoinsData {
   percentage24h: string;
   low24h: string;
   high24h: string;
+  id: string;
 }
 
-export function CryptoCard({ name }: CryptoCardProps) {
+export function CryptoCard({ name, addSetSelectedCoinsList }: CryptoCardProps) {
   const ICoinsDataInitialState: ICoinsData = {
     symbol: "",
     icon_image: "",
@@ -24,17 +27,23 @@ export function CryptoCard({ name }: CryptoCardProps) {
     percentage24h: "",
     low24h: "",
     high24h: "",
+    id: "",
   };
   const [coinsData, setCoinsData] = useState<ICoinsData>(
     ICoinsDataInitialState
   );
   const [isLoading, setLoading] = useState(true);
+  const [isClicked, setIsClicked] = useState(false);
 
   useEffect(() => {
-    fetch("https://api.coingecko.com/api/v3/coins/" + name)
-      .then((response) => response.json())
+    axios
+      .get("https://api.coingecko.com/api/v3/coins/" + name)
+      .then((response) => response.data)
       .then((res) => {
         var coin: ICoinsData = ICoinsDataInitialState;
+        if (res.id !== undefined) {
+          coin.id = res.id;
+        }
         if (res.symbol !== undefined) {
           coin.symbol = res.symbol;
         }
@@ -65,6 +74,14 @@ export function CryptoCard({ name }: CryptoCardProps) {
         setLoading(false);
       });
   }, []);
+
+  const onButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+    addSetSelectedCoinsList(event.currentTarget.id);
+    setIsClicked(!isClicked);
+  };
+  const classCard = isClicked
+    ? "border-1 border-white-900 grid grid-cols-3 text-gray-200 bg-secondary-dark-bg rounded-2xl p-3"
+    : "grid grid-cols-3 text-gray-200 bg-secondary-dark-bg rounded-2xl p-3";
   if (
     coinsData.icon_image != "" &&
     coinsData.name != "" &&
@@ -75,7 +92,7 @@ export function CryptoCard({ name }: CryptoCardProps) {
     coinsData.high24h != ""
   ) {
     return (
-      <div className="grid grid-cols-3 text-gray-200 bg-secondary-dark-bg rounded-2xl p-3">
+      <div id={coinsData.id} onClick={onButtonClick} className={classCard}>
         <div className="col-span-1 justify-self-center self-center">
           <img
             src={coinsData.icon_image}
@@ -85,6 +102,7 @@ export function CryptoCard({ name }: CryptoCardProps) {
 
         <div className="col-span-2 text-2xl ml-3">
           <p>{coinsData.name}</p>
+          {/* <button onClick={onButtonClick}>X</button> */}
           <p>({coinsData.symbol.toUpperCase()})</p>
           <div className="flex items-center md:flex-row md:place-content-start sm:flex-col sm:place-content-around sm:justify-self-center">
             <p className="text-lg font-semibold">
